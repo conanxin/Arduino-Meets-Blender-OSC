@@ -1,0 +1,113 @@
+Arduino Meets Blender
+by Chris B Stones
+   January 13, 2010
+   http://welcometochrisworld.com
+   http://code.google.com/p/chrisworld-projects/
+
+This project demonstrates how to use the Arduino to
+control items in Blenders Game Engine via the OSC protocol.
+It was initially created for real time digital puppetry.
+But it can be used as a starting example for any project that needs
+to communicate with Blender's GameEngine via the OSC (Open Sound Control) protocol.
+
+Since it uses the OSC protocol this project also demonstrates 
+how any OSC enabled app can send data to the Blender GameEngine.
+
+
+REQUIRMENTS
+
+oscP5 library by Andreas Schlegel (included)
+http://www.sojamo.de/libraries/oscP5/index.html
+
+Python SimpleOSC  (included)
+SimpleOSC is a simple API for the Open Sound Control for Python 
+by Daniel Holth, Clinton McChesney 
+
+You'll need the Arduino IDE, Processing IDE and Blender to
+run this project. 
+
+You will also need an Arduino board, 3 wires, a potentiometer, breadboard and a USB cable. 
+
+PROCESS
+
+0 Download Alpha Release
+
+1 Hardware
+Basically, one Arduino and one 3 pin potentiometer, 3 wires and the USB
+cord make up the demo circuit. The middle pin of the potentiometer 
+the middle pin is wired to the Analog 3 INPUT pin of the Arduino. 
+The outside pins are wired to 5 Volt and GND. 
+Values you read from this pin will return the full range of levels.
+( 0 to 1023, 0 to 5 Volts)
+
+You'll have to hook up the Arduino and select the proper Arduino device
+name. On Mac OS X you can find that in /dev/ looking for something like
+"/dev/tty.usbserial-A7006Rjr" after you connect the Arduino up.
+You'll need to hard code that into the processing sketch so take note.
+
+Upload the code from arduino_code/ folder to the board.
+
+2 Processing
+You need to install the oscP5 by andreas schlegel
+(http://www.sojamo.de/oscP5) in processing. 
+You go into the Processing App (Right click Show Package Contents) 
+It's in Contents/Resources/Java/libraries.
+Place the oscP5 folder in there, restart processing.
+You should be able to import oscP5.*;
+
+Change the line in oscarduino.pde to match your Arduino dev file.
+String portname = "/dev/WHATEVER_YOUR_SERIAL_DEVICE_NAME";  You can
+find out what it is by opening Terminal.app and cd /dev then ls and search
+for something that starts with tty.YattaYatta
+
+Note the varibles TO_PORT and FROM_PORT in the oscarduino.pde file. 
+The Blender code is going to be listening on a PORT. PORT should match
+the TO_PORT varible in the processing sketch.
+
+You'll also need to change HOST varible to match your localhost.
+You can open the Terminal.app and type in ifconfig to find that information.
+It should be up near the top around eth0. Goto System Preferences and then to Network.
+This will also show you the IP Address of your local computer.
+
+
+3 This demo was created with Blender 2.49b on a Mac OS X 10.6 Intel Machine.
+Inside of the blender_code/ folder you'll find a demo blend file.
+It should have the file arduino_to_blender.py already loaded inside.
+In tha text file you will need to match the PORT to the TO_PORT from
+the processing sketch. 
+
+The OSC SimpleOSC python module is in the same directory as the .blend file so you shouldn't have to install it inside blender. It's recommened that you install OSC in blender (place inside scripts/) or open all the files from blender_code/OSC into the blend file if you wish to make your blend file portable or standalone later.
+
+You'll need to adjust:
+
+# Check that you don't have a firewall blocking ports on your computer
+# Must match part Processing is sending OSC message with
+PORT = 2014  # ;) 
+
+# Most be set to same IP as localhost
+HOST = "10.0.0.3"
+
+in the arduino_to_blender.py text file. 
+
+4 Test Run
+
+Once all that is done you should be able to run the processing example
+and then Press P in Blender's View3D window to run the example in the
+GameEngine.
+
+Try turning the control knob. You should see the gauge move.
+
+DEVELOPMENT NOTES
+
+Try using higher port numbers if the project doesn't work.
+And make sure you don't have any firewall blocking ports. 
+Also check the HOST matches your localhost IP. 
+
+The processing sketch has a test mode in case you suspect somethings
+wrong with your Arduino. Set TEST = true; if you want to test send
+data to Blender by moving the mouse in your sketch.
+
+
+REFERENCES
+Blender Game Logic
+http://www.blender.org/documentation/pydoc_gameengine/PyDoc-Gameengine-2.34/index.html
